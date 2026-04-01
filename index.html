@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>我的小工具站</title>
+<style>
+body{background:#f5f5f5;font-family:微软雅黑;padding:20px;}
+.box{max-width:700px;margin:0 auto;}
+.title{text-align:center;font-size:26px;}
+.card{background:white;padding:20px;margin:10px 0;border-radius:10px;text-align:center;font-size:18px;cursor:pointer;}
+.card:hover{background:#f0f0f0;}
+.tool{display:none;background:white;padding:20px;border-radius:10px;margin:10px 0;}
+textarea{width:100%;height:150px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:16px;}
+button{padding:10px 20px;background:#409eff;color:white;border:none;border-radius:5px;cursor:pointer;margin:5px;}
+button:hover{background:#3788dd;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div id="home">
+    <div class="title">🎉 我的小工具站</div>
+    <div class="card" onclick="showTool('count')">📝 文本字数统计</div>
+    <div class="card" onclick="showTool('trim')">🧹 文本去空格</div>
+    <div class="card" onclick="showTool('qrcode')">🪪 二维码生成</div>
+    <div class="card" onclick="showTool('time')">⏰ 时间戳转换</div>
+  </div>
+
+  <div id="count" class="tool">
+    <h2>📝 文本字数统计</h2>
+    <textarea id="countText" oninput="countWord()" placeholder="输入文本自动统计..."></textarea>
+    <div id="countResult" style="margin:10px 0;padding:10px;background:#f8f9fa;border-radius:8px;">总字数：0</div>
+    <button onclick="goHome()">返回首页</button>
+  </div>
+
+  <div id="trim" class="tool">
+    <h2>🧹 文本去空格</h2>
+    <textarea id="trimText" placeholder="输入要处理的文本..."></textarea>
+    <div>
+      <button onclick="doTrim()">一键去空格</button>
+      <button onclick="copyResult()">复制结果</button>
+    </div>
+    <div id="trimResult" style="margin:10px 0;padding:10px;background:#f8f9fa;border-radius:8px;min-height:50px;">处理后内容</div>
+    <button onclick="goHome()">返回首页</button>
+  </div>
+
+  <div id="qrcode" class="tool">
+    <h2>🪪 二维码生成</h2>
+    <textarea id="qrcodeText" placeholder="输入文字/网址..."></textarea>
+    <button onclick="makeCode()">生成二维码</button>
+    <div id="codeBox" style="width:200px;height:200px;margin:10px auto;"></div>
+    <button onclick="goHome()">返回首页</button>
+  </div>
+
+  <div id="time" class="tool">
+    <h2>⏰ 时间戳转换</h2>
+    <p>当前时间戳：<span id="nowStamp"></span></p>
+    <p>当前时间：<span id="nowTime"></span></p>
+    <button onclick="goHome()">返回首页</button>
+  </div>
+</div>
+
+<script src="https://cdn.staticfile.org/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+function showTool(id){
+  document.getElementById('home').style.display='none';
+  document.querySelectorAll('.tool').forEach(t=>t.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+function goHome(){
+  document.getElementById('home').style.display='block';
+  document.querySelectorAll('.tool').forEach(t=>t.style.display='none');
+}
+function countWord(){
+  let t=document.getElementById('countText').value;
+  document.getElementById('countResult').innerText=`总字数：${t.length} | 不含空格：${t.replace(/\s/g,'').length}`;
+}
+function doTrim(){
+  let t=document.getElementById('trimText').value;
+  document.getElementById('trimResult').innerText=t.replace(/\s+/g,'');
+}
+function copyResult(){
+  let t=document.getElementById('trimResult').innerText;
+  navigator.clipboard.writeText(t).then(()=>alert('复制成功'));
+}
+function makeCode(){
+  let t=document.getElementById('qrcodeText').value;
+  document.getElementById('codeBox').innerHTML='';
+  new QRCode(document.getElementById('codeBox'),{text:t,width:200,height:200});
+}
+function updateTime(){
+  let d=new Date();
+  document.getElementById('nowStamp').innerText=Math.floor(d.getTime()/1000);
+  document.getElementById('nowTime').innerText=d.toLocaleString();
+}
+setInterval(updateTime,1000);
+updateTime();
+</script>
+</body>
+</html>
